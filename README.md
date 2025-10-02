@@ -16,22 +16,27 @@ Instruções para iniciar a API e o Banco de Dados juntos (docker-compose up).
 
 ## 2. Execução a partir da Imagem Publicada no Docker Hub
 
-Instruções para iniciar a API usando a imagem já publicada (docker run).
+Passo 1: Subir o banco PostgreSQL
+docker run --name checkpoint-db -e POSTGRES_USER=user -e POSTGRES_PASSWORD=password -e POSTGRES_DB=mydatabase -p 5432:5432 -d postgres:15-alpine
 
-Este método exige que você inicie um container de banco de dados PostgreSQL separadamente ou que ele já esteja rodando.
+Passo 2: Rodar a API usando a imagem publicada
+docker run --name checkpoint-api --link checkpoint-db:postgres-db \
+  -e SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/mydatabase \
+  -e SPRING_DATASOURCE_USERNAME=user \
+  -e SPRING_DATASOURCE_PASSWORD=password \
+  -p 8080:8080 mdasilvacerq/checkpoint-project:latest
 
-1.  Puxe e execute a imagem do Docker Hub:
-    ```bash
-    docker run -d -p 8080:8080 \
-      -e SPRING_DATASOURCE_URL=jdbc:postgresql://<IP_DO_SEU_BANCO>:5432/mydatabase \
-      -e SPRING_DATASOURCE_USERNAME=user \
-      -e SPRING_DATASOURCE_PASSWORD=password \
-      mdasilvacerq/checkpoint-project:latest
-    ```
-    **Nota:** Substitua `<IP_DO_SEU_BANCO>` pelo endereço do seu servidor PostgreSQL.
+  A API estará rodando em:
+👉 http://localhost:8080
 
 ## 3. Acesso à Documentação (Swagger)
 
 A documentação interativa da API (Swagger UI) pode ser acessada no seguinte endpoint:
 
 **`http://localhost:8080/swagger-ui.html`**
+
+## 4. Links do Projeto
+
+GitHub: https://github.com/mdasilvacerq/checkpoint-project
+
+Docker Hub: https://hub.docker.com/r/mdasilvacerq/checkpoint-project
