@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  # Serviço da API (Sua aplicação Spring Boot)
+  api:
+    container_name: checkpoint-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # TAG DA IMAGEM ATUALIZADA COM SEU USUÁRIO:
+    image: mdasilvacerq/checkpoint-project:latest 
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/mydatabase
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+
+  # Serviço do Banco de Dados (PostgreSQL)
+  postgres-db:
+    container_name: checkpoint-db
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d mydatabase"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  db-data:

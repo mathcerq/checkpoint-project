@@ -1,0 +1,30 @@
+package com.yourname.checkpointproject.controller;
+
+import com.yourname.checkpointproject.model.Product;
+import com.yourname.checkpointproject.repository.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/products")
+public class ProductController {
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    // GET: Lista todos os produtos
+    @GetMapping
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
+    }
+
+    // POST: Cria um novo produto
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Product createProduct(@RequestBody Product product) {
+        return productRepository.save(product);
+    }
+}
