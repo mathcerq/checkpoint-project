@@ -1,0 +1,32 @@
+name: Continuous Integration - Build & Test
+
+# Dispara a Action no evento push nas branches: develop, feature, hotfix 
+on:
+  push:
+    branches:
+      - develop
+      - feature
+      - hotfix
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Código
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      # Tarefa: Execução de testes unitários [cite: 42]
+      - name: Executar Testes
+        run: mvn test
+
+      # Tarefa: Empacotamento da aplicação Java com Maven [cite: 43]
+      - name: Empacotar Aplicação (Gerar JAR)
+        run: mvn -B package -DskipTests
