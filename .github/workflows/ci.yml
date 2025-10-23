@@ -23,8 +23,8 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      # Tarefa 1 & 2: Execução de testes (ignorada) e Empacotamento
-      # O comando 'mvn package' tenta executar testes.
-      # Usamos -DskipTests para pular o teste e garantir que o JAR seja criado.
-      - name: Empacotar Aplicação (Gerar JAR)
-        run: mvn -B package -DskipTests
+      # Tarefa 1 & 2: Execução de testes (ignorada) e Empacotamento (JAR)
+      # Usamos 'mvn clean package' com -DskipTests para pular a fase de 'test' do Maven.
+      # Isso garante que o JAR seja criado para o CD.
+      - name: Empacotar Aplicação (Gerar JAR e pular testes)
+        run: mvn -B clean package -DskipTests
